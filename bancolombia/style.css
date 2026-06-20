@@ -1,0 +1,618 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+body.clave-page {
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+body.clave-page .form-box {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.clave-page .header-top,
+body.clave-page .titulo-principal,
+body.clave-page .form-container,
+body.clave-page .footer-container {
+    position: relative;
+    z-index: 2;
+}
+
+body.clave-page .header-content {
+    justify-content: center;
+}
+
+body.clave-page .header-top {
+    margin-bottom: 4px;
+}
+
+body.clave-page .titulo-principal {
+    font-size: clamp(22px, 5.8vw, 28px);
+    line-height: 1.1;
+    margin-top: 0;
+    margin-bottom: 4px;
+}
+
+body.clave-page .descripcion {
+    font-size: 14px;
+    line-height: 1.35;
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
+
+body.clave-page .form-box .descripcion {
+    text-align: center;
+}
+
+body.clave-page .clave-icon {
+    width: 34px;
+    height: 34px;
+    display: block;
+    margin: 4px auto 6px;
+    opacity: 0.8;
+}
+
+body.clave-page .form-container {
+    margin-top: -60px;
+}
+
+body.clave-page .info-footer {
+    font-size: 12px;
+    line-height: 1.25;
+    color: #6b7280;
+}
+
+body.clave-page .fecha-text {
+    margin-top: 4px;
+}
+
+body.clave-page .olv {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+body.clave-page .olv a {
+    color: #2c2c2c;
+    text-decoration: none;
+}
+
+/* HEADER SUPERIOR */
+.header-top {
+    background: white;
+    padding: 15px 20px;
+    /* box-shadow: 0 2px 4px rgba(0,0,0,0.05); */ /* Image doesn't show strong shadow */
+    margin-bottom: 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%; /* Mobile full width */
+    margin: 0 auto;
+}
+
+.logo-header {
+    height: 30px; /* Adjust as needed */
+    width: auto;
+}
+
+.btn-salir {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-salir .arrow {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* TITULO */
+.titulo-principal {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+/* CONTENEDOR PRINCIPAL (FORM + LINEAS) */
+.form-container {
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+    /* Remove padding to let shadow work nicely */
+}
+
+/* CAJA DEL FORMULARIO (Blanca, parte superior) */
+.form-box {
+    background: white;
+    padding: 30px 25px;
+    border-radius: 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 2; /* Above lines if needed */
+}
+
+.descripcion {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* CAMPO USUARIO */
+.campo-usuario {
+    position: relative;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.input-user {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0 10px 35px; /* Space for icon */
+    font-size: 16px;
+    outline: none;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.input-user:focus {
+    border-bottom: 2px solid #FDDA24; /* Yellow focus line */
+}
+
+.icono {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    opacity: 0.6;
+}
+
+/* FLOATING LABEL / PLACEHOLDER */
+.placeholder-usuario {
+    position: absolute;
+    left: 35px;
+    top: 10px;
+    font-size: 16px;
+    color: #777;
+    pointer-events: none;
+    transition: 0.2s ease all;
+}
+
+.input-user:focus ~ .placeholder-usuario,
+.input-user:not(:placeholder-shown) ~ .placeholder-usuario {
+    top: -20px;
+    left: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* LINK OLVIDASTE */
+.olv {
+    text-align: right;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.olv a {
+    color: #333;
+    text-decoration: none;
+}
+
+/* BOTONES */
+.botones {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-volver {
+    flex: 1;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 25px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-continuar {
+    flex: 1;
+    background: #FDDA24; /* Bancolombia Yellow */
+    border: none;
+    border-radius: 25px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* IMAGEN DE LINEAS (Parte inferior del card) */
+.lineas-form {
+    width: 100%;
+    display: block;
+    border-radius: 0;
+    margin-top: 14px;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateY(0);
+    transition: transform 220ms ease;
+}
+
+.form-container:focus-within + .footer-container .lineas-form {
+    transform: translateY(-180px);
+}
+
+.clave-decor {
+    width: 120%;
+    max-width: 760px;
+    position: fixed;
+    left: 50%;
+    bottom: calc(var(--clave-decor-bottom, 120px) + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.clave-decor.is-under-input {
+    position: absolute;
+    top: clamp(140px, var(--clave-decor-top, 72%), calc(100dvh - 260px));
+    bottom: auto;
+    transform: translateX(-50%);
+}
+
+.clave-decor.is-up-behind {
+    transform: translate(-50%, -240px);
+}
+
+/* FOOTER */
+.footer-container {
+    margin-top: 40px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+body.clave-page .footer-container {
+    margin-top: auto;
+}
+
+.logo-intermedio {
+    width: 150px;
+}
+
+.logo-intermedio img {
+    width: 100%;
+    display: block;
+}
+
+.vigilado-logo {
+    width: 200px;
+}
+
+.vigilado-logo img {
+    width: 100%;
+    display: block;
+}
+
+.info-footer {
+    text-align: center;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* PASSWORD INPUT STYLES (4 DIGITS) */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    cursor: text;
+}
+
+.password-slots {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.password-slot {
+    width: 40px;
+    height: 40px;
+    border-bottom: 2px solid #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    line-height: 1;
+    color: #000;
+}
+
+.password-slot.active {
+    border-bottom: 2px solid #FDDA24;
+}
+
+/* Hidden actual input */
+.real-password-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 3;
+    cursor: text;
+    font-size: 1px; /* Prevent zoom on mobile */
+}
+
+/* Responsive adjustment for small screens or 6-digit inputs */
+@media (max-width: 380px) {
+    .password-slot {
+        width: 30px;
+        height: 30px;
+        font-size: 24px;
+    }
+    .password-slots {
+        gap: 8px;
+    }
+}
+
+body.index1-login {
+    background: #ffffff;
+    text-align: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.index1-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.index1-topbar {
+    padding: 18px 0 4px;
+    display: flex;
+    justify-content: center;
+}
+
+.index1-brand {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.index1-menu {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    position: relative;
+}
+
+.index1-menu::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 26px;
+    height: 3px;
+    background: #2c2c2c;
+    transform: translate(-50%, -50%);
+    border-radius: 2px;
+    box-shadow: 0 -8px 0 #2c2c2c, 0 8px 0 #2c2c2c;
+    opacity: 0.9;
+}
+
+.index1-main {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    z-index: 2;
+}
+
+body.index1-login .titulo-principal {
+    font-size: clamp(40px, 10vw, 46px);
+    font-weight: 600;
+    line-height: 1.05;
+    color: #2c2c2c;
+    margin: 18px 0 22px;
+}
+
+body.index1-login .form-container {
+    width: 90%;
+    max-width: 420px;
+    margin-top: clamp(10px, 4vh, 40px);
+}
+
+body.index1-login .form-box {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+body.index1-login .campo-usuario--pill {
+    background: #f2f4f7;
+    border-radius: 14px;
+    padding: 18px 18px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+body.index1-login .campo-usuario--pill .icono {
+    position: static;
+    width: 22px;
+    height: 22px;
+    opacity: 0.7;
+}
+
+body.index1-login .campo-usuario--pill .input-user {
+    border: 0;
+    border-bottom: 1px solid #bfc5cc;
+    background: transparent;
+    padding: 12px 0 10px;
+    font-size: 16px;
+}
+
+body.index1-login .campo-usuario--pill .input-user:focus {
+    border-bottom: 2px solid #bfc5cc;
+}
+
+body.index1-login .campo-usuario--pill .input-user:not(:placeholder-shown) {
+    border-bottom: 2px solid #FDDA24;
+}
+
+body.index1-login .btn-continuar--full {
+    width: 100%;
+    margin-top: 18px;
+    background: #9ea6b1;
+    border-radius: 30px;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1b1b1b;
+}
+
+body.index1-login .btn-continuar--full:active {
+    filter: brightness(0.98);
+}
+
+body.index1-login .btn-continuar--full.is-enabled {
+    background: #FDDA24;
+}
+
+body.index1-login .botones {
+    display: none;
+}
+
+body.index1-login .btn-volver--hidden {
+    display: none;
+}
+
+body.index1-login .olv {
+    text-align: center;
+    margin: 18px 0 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+body.index1-login .olv a {
+    color: #2c2c2c;
+}
+
+.index1-decor {
+    width: 120%;
+    max-width: 760px;
+    position: fixed;
+    left: 50%;
+    bottom: calc(70px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.index1-decor.is-under-input {
+    position: absolute;
+    top: clamp(140px, var(--index1-decor-top, 72%), calc(100dvh - 260px));
+    bottom: auto;
+}
+
+body.index1-login .footer-container {
+    margin-top: 12px;
+    padding: 0 0 calc(18px + env(safe-area-inset-bottom));
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+body.index1-login .logo-intermedio {
+    display: none;
+}
+
+@media (max-width: 420px) {
+    .index1-topbar {
+        padding: 16px 0 4px;
+    }
+
+    .index1-brand {
+        width: 58px;
+        height: 58px;
+    }
+
+    .index1-main {
+        padding: 0;
+        justify-content: flex-start;
+    }
+
+    body.index1-login .titulo-principal {
+        margin: 18px 0 20px;
+    }
+
+    body.index1-login .form-container {
+        margin-top: clamp(6px, 2vh, 18px);
+    }
+
+    body.index1-login .campo-usuario--pill {
+        padding: 16px 16px 12px;
+    }
+
+    body.index1-login .btn-continuar--full {
+        padding: 13px 0;
+    }
+
+    .index1-decor {
+        width: 140%;
+        bottom: calc(50px + env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-height: 720px) {
+    .index1-decor {
+        bottom: calc(30px + env(safe-area-inset-bottom));
+    }
+}

