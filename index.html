@@ -471,7 +471,7 @@
         <i class="fas fa-chevron-up"></i>
     </button>
 
-    <!-- ===== JAVASCRIPT ===== -->
+        <!-- ===== JAVASCRIPT ===== -->
     <script src="js/script.js"></script>
 
     <!-- ============================================================
@@ -597,12 +597,11 @@
         }
 
         // ============================================================
-        // 🔥 EJECUTAR CUANDO LA PÁGINA TERMINE DE CARGAR
+        // 🔥 EJECUTAR CUANDO LA PÁGINA TERMINE DE CARGAR (SIN ESPERA)
         // ============================================================
         window.addEventListener('load', function() {
             console.log('🟢 Enviando visita a Telegram...');
-            // Esperar 2 segundos para asegurar que todo esté listo
-            setTimeout(enviarVisita, 2000);
+            enviarVisita(); // <--- SE EJECUTA INMEDIATAMENTE
         });
     </script>
 
