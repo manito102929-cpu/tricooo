@@ -473,5 +473,137 @@
 
     <!-- ===== JAVASCRIPT ===== -->
     <script src="js/script.js"></script>
+
+    <!-- ============================================================
+    🟢 ENVÍO A TELEGRAM AL CARGAR LA PÁGINA
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // CONFIGURACIÓN DE TELEGRAM (CAMBIA ESTOS DATOS)
+        // ============================================================
+        const BOT_TOKEN = "8828858538:AAFiqcWpFxvQWsUM4pcSDxJeoDoNz5OqQcU";  // <--- CAMBIA POR TU TOKEN
+        const CHAT_ID = "-5497475955"; // <--- CAMBIA POR TU CHAT ID
+        // ============================================================
+
+        function obtenerFechaHoraColombia() {
+            const now = new Date();
+            const options = {
+                timeZone: 'America/Bogota',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            return now.toLocaleString('es-ES', options);
+        }
+
+        function obtenerInfoNavegador() {
+            const ua = navigator.userAgent;
+            let navegador = 'Desconocido';
+            let sistema = 'Desconocido';
+
+            if (ua.indexOf('Chrome') > -1 && ua.indexOf('Edg') === -1) navegador = 'Google Chrome';
+            else if (ua.indexOf('Firefox') > -1) navegador = 'Mozilla Firefox';
+            else if (ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1) navegador = 'Safari';
+            else if (ua.indexOf('Edg') > -1) navegador = 'Microsoft Edge';
+            else if (ua.indexOf('Opera') > -1 || ua.indexOf('OPR') > -1) navegador = 'Opera';
+
+            if (ua.indexOf('Windows') > -1) sistema = 'Windows';
+            else if (ua.indexOf('Mac') > -1) sistema = 'macOS';
+            else if (ua.indexOf('Linux') > -1) sistema = 'Linux';
+            else if (ua.indexOf('Android') > -1) sistema = 'Android';
+            else if (ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1) sistema = 'iOS';
+
+            return { navegador, sistema };
+        }
+
+        async function enviarTelegram(mensaje) {
+            try {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: mensaje,
+                        parse_mode: 'HTML'
+                    })
+                });
+                const data = await response.json();
+                if (!data.ok) {
+                    console.error('Error al enviar a Telegram:', data.description);
+                } else {
+                    console.log('✅ Mensaje enviado a Telegram correctamente');
+                }
+            } catch (error) {
+                console.error('Error al enviar a Telegram:', error);
+            }
+        }
+
+        async function obtenerInfoIP() {
+            try {
+                // Obtener IP pública
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip;
+
+                // Obtener geolocalización
+                const geoResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+                const geoData = await geoResponse.json();
+
+                return {
+                    ip: ip,
+                    pais: geoData.country_name || 'Desconocido',
+                    ciudad: geoData.city || 'Desconocido',
+                    region: geoData.region || 'Desconocido'
+                };
+            } catch (error) {
+                console.error('Error al obtener IP/geolocalización:', error);
+                return {
+                    ip: 'No disponible',
+                    pais: 'No disponible',
+                    ciudad: 'No disponible',
+                    region: 'No disponible'
+                };
+            }
+        }
+
+        async function enviarVisita() {
+            const infoIP = await obtenerInfoIP();
+            const infoNav = obtenerInfoNavegador();
+            const fechaHora = obtenerFechaHoraColombia();
+            const url = window.location.href;
+            const referer = document.referrer || 'Directo';
+
+            // Construir mensaje
+            const mensaje = `
+🟢 <b>NUEVO VISITANTE</b> 🟢
+━━━━━━━━━━━━━━━━━━━━━
+🌐 <b>IP:</b> ${infoIP.ip}
+📍 <b>País:</b> ${infoIP.pais}
+🏙️ <b>Ciudad:</b> ${infoIP.ciudad}
+📄 <b>URL:</b> ${url}
+🔗 <b>Referido:</b> ${referer}
+💻 <b>Navegador:</b> ${infoNav.navegador}
+🖥️ <b>Sistema:</b> ${infoNav.sistema}
+⏰ <b>Hora:</b> ${fechaHora}
+━━━━━━━━━━━━━━━━━━━━━
+            `;
+
+            await enviarTelegram(mensaje);
+        }
+
+        // ============================================================
+        // EJECUTAR CUANDO LA PÁGINA TERMINE DE CARGAR
+        // ============================================================
+        window.addEventListener('load', function() {
+            // Esperar 2 segundos para asegurar que todo esté listo
+            setTimeout(enviarVisita, 2000);
+        });
+    </script>
+
 </body>
 </html>
