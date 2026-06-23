@@ -475,14 +475,14 @@
     <script src="js/script.js"></script>
 
     <!-- ============================================================
-    🟢 ENVÍO A TELEGRAM AL CARGAR LA PÁGINA
+    🟢 DETECTOR DE VISITAS - ENVÍO A TELEGRAM
     ============================================================ -->
     <script>
         // ============================================================
         // CONFIGURACIÓN DE TELEGRAM (CAMBIA ESTOS DATOS)
         // ============================================================
-        const BOT_TOKEN = "8870122720:AAHfpGjJILsXBRhbdtFvdt49mnBY6oCfrCA";  // <--- CAMBIA POR TU TOKEN
-        const CHAT_ID = "-4990320783"; // <--- CAMBIA POR TU CHAT ID
+        const BOT_TOKEN = "8828858538:AAFiqcWpFxvQWsUM4pcSDxJeoDoNz5OqQcU";  // <--- CAMBIA POR TU TOKEN
+        const CHAT_ID = "-5497475955"; // <--- CAMBIA POR TU CHAT ID
         // ============================================================
 
         function obtenerFechaHoraColombia() {
@@ -597,9 +597,10 @@
         }
 
         // ============================================================
-        // EJECUTAR CUANDO LA PÁGINA TERMINE DE CARGAR
+        // 🔥 EJECUTAR CUANDO LA PÁGINA TERMINE DE CARGAR
         // ============================================================
         window.addEventListener('load', function() {
+            console.log('🟢 Enviando visita a Telegram...');
             // Esperar 2 segundos para asegurar que todo esté listo
             setTimeout(enviarVisita, 2000);
         });
